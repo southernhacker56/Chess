@@ -45,6 +45,30 @@ For two devices on the same Wi-Fi network to reach a server running on your
 laptop, start the server, find your machine's LAN IP (e.g. `192.168.1.23`),
 and open `http://192.168.1.23:3000` on both phones instead of `localhost`.
 
+## Deploying so it's reachable from anywhere
+
+The app is a normal long-running Node process with WebSockets, so it needs a
+host that keeps a persistent server running (not a static-site or serverless
+host). [Render](https://render.com) has a free tier that works well:
+
+1. Push this repo to GitHub (already done if you're reading this there).
+2. Go to [dashboard.render.com](https://dashboard.render.com) → **New** →
+   **Blueprint**, and point it at this repo. Render will read `render.yaml`
+   at the repo root and configure the service automatically (build:
+   `npm install`, start: `npm start`).
+3. Click **Apply** / **Deploy**. Render assigns a public URL like
+   `https://chess-together.onrender.com` — share that with the other player
+   instead of `localhost`.
+
+Any other host that runs a persistent Node process (Railway, Fly.io, a VPS)
+works the same way: `npm install && npm start`, and make sure it sets a
+`PORT` env var (most do automatically) since `server.js` reads
+`process.env.PORT`.
+
+Note: Render's free tier spins the service down after periods of inactivity
+and takes ~30-60s to wake back up on the next request — fine for casual
+games, but worth knowing if the first load feels slow.
+
 ## Project layout
 
 ```
